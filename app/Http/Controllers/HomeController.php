@@ -34,13 +34,14 @@ class HomeController extends Controller
         $annee = Extract::distinct()->select('S_LAN')->orderBy('S_LAN')->get();
         $mois = Extract::distinct()->select('S_TEL')->orderBy('S_TEL')->get();
 
-        
+
 
         return view('home',compact('annee'));
     }
 
     public function showMois(Request $request,$annee)
     {
+
         if (!$request->annee) {
             $html = '<option value="" >'.trans('mois').'</option>';
         } else {
@@ -51,12 +52,12 @@ class HomeController extends Controller
             ->distinct('S_TEL')
             ->get();
             foreach ($annee as $m) {
-              
+
                 $html .= '
                 <option  value="'.$m->S_TEL.'">'.$m->S_TEL.'</option>
                 ';
-                
-                
+
+
             }
     }
     return response()->json(['html' => $html]);
@@ -76,12 +77,12 @@ public function showSemaine(Request $request,$mois,$annee)
             ->orderby('SEM')
             ->get();
             foreach ($mois as $s) {
-              
+
                 $html .= '
                 <option  value="'.$s->SEM.'">'.$s->SEM.'</option>
                 ';
-                
-                
+
+
             }
     }
     return response()->json(['html' => $html]);
@@ -101,14 +102,14 @@ public function showJours(Request $request,$mois,$annee,$semaine)
             ->distinct('S_ACOD')
             ->orderby('S_ACOD')
             ->get();
-         
+
             foreach ($data as $d) {
-              
+
                 $html .= '
                 <option  value="'.$d->S_ACOD.'">'.$d->S_ACOD.'</option>
                 ';
-                
-                
+
+
             }
     }
     return response()->json(['html' => $html]);
@@ -116,7 +117,7 @@ public function showJours(Request $request,$mois,$annee,$semaine)
 
 
 public function GetData (Request $request)
-{       
+{
    $pjt = Auth::user()->pjt;
    $typo = $request->typo ;
    $annee = $request->annee;
@@ -124,53 +125,53 @@ public function GetData (Request $request)
    $semaine = $request->semaine;
    $jour = $request->jour;
 
-   
-        if( ($annee == "all" && $typo == "all") || ($jour == "all" && $mois == "all" && $semaine == "all" && $annee == "all" && $typo == "all" ) ){   
-        $resulat = Extract::count();
-        }
-    if($pjt != "all") {
-        $resulat = Extract::where('S1',$pjt)->count();
+
+        $enreg_nbr_arvato = 0;
+        $enreg_nbr_all = 0;
+
+
+    if( $typo != "all" ) {
+        $enreg_nbr_arvato = Extract::Selection()->typo("ARVATO",$typo)->get();
+        $enreg_nbr_all = Extract::Selection()->typo("ARVATO",$typo)->get();
+
+
     }
-    if($pjt != "all" && $typo != "all") {
-        $resulat = Extract::where('S1','=',$pjt)
-        ->where('S2','=',$typo)
-        ->count();
+    if( $typo != "all" && $annee != "all" ) {
+
+        $enreg_nbr_arvato = Extract::Selection()->annee("ARVATO",$typo,$annee)->get();
+        $enreg_nbr_all = Extract::Selection()->annee("all",$typo,$annee)->get();
+        $note_arvato = Extract::Note()->annee("ARVATO",$typo,$annee)->get();
+        $noteB2s_all = Extract::Note()->annee("all",$typo,$annee)->get();
+
+
+
     }
-    if($pjt != "all" && $typo != "all" && $annee != "all") {
-        $resulat = Extract::where('S1','=',$pjt)
-        ->where('S2','=',$typo)
-        ->where('S_LAN','=',$annee)
-        ->count();
+    if( $typo != "all" && $annee != "all" && $mois != "all" ) {
+
+        $enreg_nbr_arvato = Extract::Selection()->mois("ARVATO",$typo,$annee,$mois)->get();
+        $enreg_nbr_all = Extract::Selection()->mois("all",$typo,$annee,$mois)->get();
+
+
     }
-    if($pjt != "all" && $typo != "all" && $annee != "all" && $mois != "all") {
-        $resulat = Extract::where('S1','=',$pjt)
-        ->where('S2','=',$typo)
-        ->where('S_LAN','=',$annee)
-        ->where('S_TEL','=',$mois)
-        ->count();
+    if( $typo != "all" && $annee != "all" && $mois != "all"  && $semaine != "all" ) {
+
+        $enreg_nbr_arvato = Extract::Selection()->semaine("ARVATO",$typo,$annee,$mois,$semaine)->get();
+        $enreg_nbr_all = Extract::Selection()->semaine("all",$typo,$annee,$mois,$semaine)->get();
+
+
     }
-    if($pjt != "all" && $typo != "all" && $annee != "all" && $mois != "all" && $semaine != "all" ) {
-        $resulat = Extract::where('S1','=',$pjt)
-        ->where('S2','=',$typo)
-        ->where('S_LAN','=',$annee)
-        ->where('S_TEL','=',$mois)
-        ->where('SEM','=',$semaine)
-        ->count();
-    }
-    if($pjt != "all" && $typo != "all" && $annee != "all" && $mois != "all" && $semaine != "all" && $jour != "all" ) {
-        $resulat = Extract::where('S1','=',$pjt)
-        ->where('S2','=',$typo)
-        ->where('S_LAN','=',$annee)
-        ->where('S_TEL','=',$mois)
-        ->where('SEM','=',$semaine)
-        ->where('s_acod','=',$semaine)
-        ->count();
+    if( $typo != "all" && $annee != "all" && $mois != "all"  && $semaine != "all" && $jour != "all" ) {
+
+        $enreg_nbr_arvato = Extract::Selection()->jour("ARVATO",$typo,$annee,$mois,$semaine,$jour)->get();
+        $enreg_nbr_all = Extract::Selection()->jour("all",$typo,$annee,$mois,$semaine,$jour)->get();
+
+
     }
 
-        dd($resulat,$pjt );
-      
+
+        dd($note_arvato,$noteB2s_all);
+
 }
-
 
 
 }

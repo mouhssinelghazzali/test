@@ -115,19 +115,19 @@
         </div>
         <div class="col-12 col-md-2">
                 <select name="mois" id="mois" class="form-control" >
-                    
+
 
                 </select>
             </div>
             <div class="col-12 col-md-2">
                     <select name="semaine" id="semaine" class="form-control" >
-                        
+
 
                     </select>
                 </div>
                 <div class="col-12 col-md-2">
                         <select name="jour" id="jour" class="form-control">
-                           
+
 
                         </select>
                     </div>
@@ -137,7 +137,7 @@
                                     <i class="fa fa-magic"></i>&nbsp; chercher</button>
                         </div>
 
-                 
+
 </div>
 </div>
 </form>
@@ -161,7 +161,7 @@
 <tbody>
 <tr>
 <td>2018-09-29 05:57</td>
-<td>100398</td>
+<td>{{ 100398 }}</td>
 <td>iPhone X 64Gb Grey</td>
 <td class="text-right">$999.00</td>
 <td class="text-right">1</td>
@@ -237,7 +237,7 @@
                 method: 'GET',
                 success: function(data) {
                     $('#mois').html(data.html);
-                    
+
                 }
             });
         });
@@ -247,7 +247,7 @@
                 method: 'GET',
                 success: function(data) {
                     $('#semaine').html(data.html);
-                    
+
                 }
             });
         });
@@ -257,10 +257,10 @@
                 method: 'GET',
                 success: function(data) {
                     $('#jour').html(data.html);
-                    
+
                 }
             });
         });
-        
+
   </script>
 @endsection
